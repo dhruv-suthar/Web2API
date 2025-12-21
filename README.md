@@ -1,6 +1,6 @@
 # Web2API ✦
 
-> A data gathering platform that turns any website into a **type-safe API** — with schema validation, AI-powered extraction, and scheduled monitoring.
+> A data gathering platform that turns any website into a **API** — with schema validation, AI-powered extraction, and scheduled monitoring.
 
 <p align="center">
   <a href="https://web2api-frontend.vercel.app/"><strong>🌐 Live Demo</strong></a> · 
