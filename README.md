@@ -279,24 +279,4 @@ Built for the [Backend Reloaded Hackathon](https://www.wemakedevs.org/hackathons
 - [Firecrawl Docs](https://firecrawl.dev)
 - [OpenAI API](https://platform.openai.com/docs)
 
-## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit your changes: `git commit -m 'Add amazing feature'`
-4. Push to the branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
-
-## 📄 License
-
-MIT
-
----
-
-<div align="center">
-
-Built with ⚡ [Motia](https://motia.dev) for [Backend Reloaded Hackathon](https://www.wemakedevs.org/hackathons/motiahack25)
-
-**Turn any website into an API. No code. No selectors. Just AI.**
-
-</div>
