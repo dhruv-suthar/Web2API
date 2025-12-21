@@ -1,0 +1,92 @@
+[
+  {
+    "id": "debug",
+    "config": {
+      "src/api/debug/state_verification_step.py": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
+    "id": "hello-world-flow",
+    "config": {
+      "src/hello/process_greeting_step.py": {
+        "x": 594,
+        "y": 26
+      },
+      "src/hello/hello_api_step.py": {
+        "x": 0,
+        "y": 0,
+        "sourceHandlePosition": "right"
+      }
+    }
+  },
+  {
+    "id": "scraper-management",
+    "config": {
+      "src/api/list_scrapers_step.py": {
+        "x": 81,
+        "y": 0
+      },
+      "src/api/get_scraper_step.py": {
+        "x": 56,
+        "y": 204
+      },
+      "src/api/create_scraper_step.py": {
+        "x": 0,
+        "y": 408
+      }
+    }
+  },
+  {
+    "id": "scheduled-scraping",
+    "config": {
+      "src/cron/run_scheduled_monitors_step.py": {
+        "x": -42,
+        "y": -13
+      },
+      "src/api/list_monitors_step.py": {
+        "x": -40,
+        "y": 203
+      },
+      "src/api/delete_monitor_step.py": {
+        "x": 26,
+        "y": 444
+      }
+    }
+  },
+  {
+    "id": "extraction-flow",
+    "config": {
+      "steps/events/store_results_step.py": {
+        "x": 1050,
+        "y": 34
+      },
+      "steps/events/handle_extraction_error_step.py": {
+        "x": 1400,
+        "y": 73
+      },
+      "steps/events/fetch_webpage_step.py": {
+        "x": 350,
+        "y": 34
+      },
+      "steps/events/extract_with_llm_step.py": {
+        "x": 700,
+        "y": 73
+      },
+      "steps/api/run_scraper_step.py": {
+        "x": 0,
+        "y": 0
+      },
+      "steps/api/get_status_step.py": {
+        "x": 0,
+        "y": 224
+      },
+      "steps/api/get_results_step.py": {
+        "x": 31,
+        "y": 448
+      }
+    }
+  }
+]
