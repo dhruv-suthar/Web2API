@@ -202,8 +202,7 @@ curl -X POST http://localhost:3001 /scrapers \
 curl -X POST http://localhost:3001 /scrape/:scraperId \
   -H "Content-Type: application/json" \
   -d '{
-    "url": "https://news.ycombinator.com/",
-    "options": {"async": true}
+    "url": "https://news.ycombinator.com/"
   }'
 ```
 
