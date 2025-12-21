@@ -29,7 +29,6 @@
 | Extraction Caching | ✅ Done | Cache by URL + schema hash |
 | Content Caching | ✅ Done | Cache raw content by URL only |
 | Real-time Progress | ✅ Done | WebSocket updates via Motia Streams |
-| Webhook Notifications | 🔜 Planned | Notify on data changes |
 
 ### API
 
@@ -272,7 +271,7 @@ I used Motia to build an event-driven web extraction pipeline integrating Firecr
 
 **Motia Streams** store real-time progress updates as each step completes, which the frontend polls to display job status.
 
-**Cron Step** runs every 5 minutes to check scheduled monitors and triggers fresh scrapes with `use_cache: False`, ensuring monitored URLs always get up-to-date data.
+**Cron Step** runs every 5 minutes to check scheduled scrapers jobs and triggers to scrape data with `use_cache: False`, ensuring monitored URLs always get up-to-date data.
 
 #### Motia Features Summary
 
