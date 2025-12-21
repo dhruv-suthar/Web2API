@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://web2api-frontend.vercel.app/"><strong>🌐 Live Demo</strong></a> · 
-  <a href="https://my-app-production-f720.up.railway.app/"><strong> Motia Workbench</strong></a>
+  <a href="https://my-app-production-a9db.up.railway.app/"><strong> Motia Workbench</strong></a>
 </p>
 
 ## ✨ Features
