@@ -197,7 +197,7 @@ export function CreateScraperForm() {
               value={formData.schedule?.toString() || ""}
               onChange={(e) => setFormData({ ...formData, schedule: e.target.value })}
             />
-            <p className="text-xs text-zinc-500 mt-1">Cron expression or interval in minutes</p>
+            <p className="text-xs text-zinc-500 mt-1">Cron expression or interval in minutes (use multiples of 5, e.g., 5, 15, 60)</p>
           </div>
           
           <div>

@@ -34,10 +34,13 @@ export default function RootLayout({
                   <Link href="/" className="hover:text-amber-500 transition-colors">
                     Dashboard
                   </Link>
+                  <Link href="/monitors" className="hover:text-amber-500 transition-colors">
+                    Monitors
+                  </Link>
                   <Link href="/scrapers/new" className="hover:text-amber-500 transition-colors">
                     New Scraper
                   </Link>
-                  <a href="https://docs.motia.dev" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-amber-500 transition-colors">
+                  <a href="https://www.motia.dev/docs" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-amber-500 transition-colors">
                     <Code className="h-4 w-4" />
                     Docs
                   </a>

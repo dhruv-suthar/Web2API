@@ -107,5 +107,10 @@ export const api = {
     fetchJson<{ monitors: Monitor[]; total: number; active_count: number }>(
       `${API_BASE}/monitors${scraperId ? `?scraper_id=${scraperId}` : ''}`
     ),
+
+  deleteMonitor: (monitorId: string) =>
+    fetchJson<{ message: string; monitor_id: string }>(`${API_BASE}/monitors/${monitorId}`, {
+      method: 'DELETE',
+    }),
 };
 

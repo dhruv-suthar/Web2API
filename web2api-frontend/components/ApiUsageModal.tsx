@@ -29,12 +29,7 @@ export function ApiUsageModal({ scraper, open, onClose }: ApiUsageModalProps) {
   const endpoint = `${normalizedBaseUrl}/scrape/${scraper.scraper_id}`
   
   const requestBody = JSON.stringify({
-    url: scraper.example_url || "https://example.com/product/123",
-    options: {
-      async: true,
-      use_cache: true,
-      wait_for: 2000
-    }
+    url: scraper.example_url || "https://example.com/product/123"
   }, null, 2)
 
   const curlExample = `curl -X POST \\
@@ -128,10 +123,6 @@ export function ApiUsageModal({ scraper, open, onClose }: ApiUsageModalProps) {
               <span className="font-mono text-amber-500 font-bold shrink-0">url</span>
               <span className="text-zinc-500">(string, required) The target URL to scrape</span>
             </div>
-            <div className="text-xs flex gap-2">
-              <span className="font-mono text-amber-500 font-bold shrink-0">options</span>
-              <span className="text-zinc-500">(object, optional) Extraction settings like async and caching</span>
-            </div>
           </div>
         </section>
 
@@ -194,8 +185,8 @@ export function ApiUsageModal({ scraper, open, onClose }: ApiUsageModalProps) {
         <div className="bg-blue-900/10 border border-blue-900/30 rounded-lg p-4 text-blue-200/70 text-sm flex gap-3">
           <Info className="h-5 w-5 shrink-0 text-blue-400" />
           <div>
-            <p className="font-semibold text-blue-300 mb-1">Developer Tip</p>
-            Use <code className="text-amber-500">"async": true</code> in options to get a <code className="text-amber-500">job_id</code> immediately and poll for results using the status endpoint.
+            <p className="font-semibold text-blue-300 mb-1">Synchronous by Default</p>
+            This endpoint returns the extracted data directly in the response. For long-running scrapes, add <code className="text-amber-500">"async": true</code> to options to get a <code className="text-amber-500">job_id</code> and poll the status endpoint.
           </div>
         </div>
       </div>
