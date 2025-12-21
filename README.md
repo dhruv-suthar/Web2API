@@ -1,8 +1,6 @@
 # Web2API ✦
 
-> A data gathering platform that turns any website into a **type-safe API** — with schema validation, AI-powered extraction, and scheduled monitoring built-in.
-
-![Web2API - AI-Powered Scraping](./web2api-backend/public/hero.png)
+> A data gathering platform that turns any website into a **type-safe API** — with schema validation, AI-powered extraction, and scheduled monitoring.
 
 ## ✨ Features
 
@@ -13,7 +11,6 @@
 - 🔄 **Scheduled Monitoring** - Cron jobs for automatic re-scraping
 - 🛠️ **Visual Workbench** - See your workflow in Motia's flow visualization
 
-![Extraction Flow](./web2api-backend/public/flow.png)
 
 ## 🗺️ Roadmap
 
@@ -97,7 +94,7 @@ OPENAI_API_KEY=sk-xxxxxxxxxxxx
 Create `.env.local` in `web2api-frontend/`:
 
 ```bash
-NEXT_PUBLIC_API_URL=http://localhost:3001/api
+NEXT_PUBLIC_API_URL=http://localhost:3001
 ```
 
 ### Start Development
@@ -146,27 +143,34 @@ Open [http://localhost:3000](http://localhost:3000) and create your first scrape
 ### Motia Workbench
 
 Visualize and test your API flows in the Motia Workbench:
+<img width="1871" height="703" alt="Screenshot 2025-12-21 at 9 25 58 PM" src="https://github.com/user-attachments/assets/65889357-47e8-4341-8fab-35230c2f170a" />
 
-![Motia Workbench](./web2api-backend/public/workbench.png)
+<img width="1886" height="700" alt="Screenshot 2025-12-21 at 9 25 16 PM" src="https://github.com/user-attachments/assets/1a76d8cd-b857-44eb-83e3-9486cc5a2168" />
+
+<img width="1909" height="741" alt="Screenshot 2025-12-21 at 9 29 43 PM" src="https://github.com/user-attachments/assets/488248c3-ef14-4613-96d4-2f9bf81bb1f4" />
+
+
+
+
 
 ### API Endpoints
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/api/scrapers` | POST | Create scraper with JSON schema |
-| `/api/scrapers` | GET | List all scrapers |
-| `/api/scrapers/:id` | GET | Get scraper details |
-| `/api/scrape/:scraperId` | POST | Execute scraper on URL |
-| `/api/status/:jobId` | GET | Poll job status |
-| `/api/results/:jobId` | GET | Get extraction results |
-| `/api/monitors` | GET | List scheduled monitors |
-| `/api/monitors/:id` | DELETE | Remove monitor |
+| ` /scrapers` | POST | Create scraper with JSON schema |
+| ` /scrapers` | GET | List all scrapers |
+| ` /scrapers/:id` | GET | Get scraper details |
+| ` /scrape/:scraperId` | POST | Execute scraper on URL |
+| ` /status/:jobId` | GET | Poll job status |
+| ` /results/:jobId` | GET | Get extraction results |
+| ` /monitors` | GET | List scheduled monitors |
+| ` /monitors/:id` | DELETE | Remove monitor |
 
 ### Example Usage
 
 ```bash
 # Create a scraper
-curl -X POST http://localhost:3001/api/scrapers \
+curl -X POST http://localhost:3001 /scrapers \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Hacker News Scraper",
@@ -175,7 +179,7 @@ curl -X POST http://localhost:3001/api/scrapers \
   }'
 
 # Run the scraper
-curl -X POST http://localhost:3001/api/scrape/:scraperId \
+curl -X POST http://localhost:3001 /scrape/:scraperId \
   -H "Content-Type: application/json" \
   -d '{
     "url": "https://news.ycombinator.com/",
@@ -201,7 +205,7 @@ vercel --prod
 ```
 
 Set environment variables in Vercel:
-- `NEXT_PUBLIC_API_URL` - Your Railway backend URL (e.g., `https://web2api.up.railway.app/api`)
+- `NEXT_PUBLIC_API_URL` - Your Railway backend URL (e.g., `https://web2api.up.railway.app `)
 
 ## 📁 Project Structure
 
@@ -227,7 +231,7 @@ web2api/
 ├── web2api-frontend/
 │   ├── app/                  # Next.js App Router
 │   ├── components/           # React Components
-│   └── lib/api.ts            # API Client
+│   └── lib .ts            # API Client
 ```
 
 ## 🛠️ Tech Stack
@@ -260,17 +264,7 @@ Built for the [Backend Reloaded Hackathon](https://www.wemakedevs.org/hackathons
 | **Event Steps** | Async pipeline: Fetch → Extract → Store |
 | **Cron Steps** | Scheduled monitoring every 5 minutes |
 | **State Management** | Redis-backed caching with two cache layers |
-| **Streams** | Real-time WebSocket progress updates |
-| **Workbench** | Visual flow debugging and step visualization |
 
-### Judging Criteria
-
-| Criteria | Our Implementation |
-|----------|-------------------|
-| **Real-World Impact** | Solves web scraping pain - no more brittle CSS selectors |
-| **Creativity & Innovation** | AI extraction + two-level caching = instant structured APIs |
-| **Technical Excellence** | DDD architecture, event-driven design, FIFO queues with retry |
-| **Developer Experience** | Define schema → Get JSON. No code, no selectors |
 
 ## 📚 Learn More
 
