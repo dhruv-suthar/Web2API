@@ -176,17 +176,36 @@ Visualize and test your API flows in the Motia Workbench:
 curl -X POST http://localhost:3001 /scrapers \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "Hacker News Scraper",
-    "schema": {"news_titles": ["string"]},
-    "example_url": "https://news.ycombinator.com/"
-  }'
+  "name": "Tech crunch startup news scraper",
+  "description": "Scrape Tech crunch  news title, author ",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "news": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "author": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "example_url": "https://techcrunch.com/category/startups/"
+}'
 
 # Run the scraper
 curl -X POST http://localhost:3001 /scrape/:scraperId \
   -H "Content-Type: application/json" \
   -d '{
     "url": "https://news.ycombinator.com/",
-    "options": {"use_cache": true}
+    "options": {"async": true}
   }'
 ```
 
