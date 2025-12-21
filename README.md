@@ -58,7 +58,7 @@
 | Run Scraper UI | ✅ Done | Execute with options |
 | Job Progress | ✅ Done | Real-time status updates |
 | Results Viewer | ✅ Done | Pretty JSON display with syntax highlighting |
-| API Usage Modal | ✅ Done | Show how to use scrapers programmatically |
+| API Usage Modal | ✅ Done | Show how to use scrapers programmatically like how developer can integrate in their frontend |
 
 **Want to contribute?** PRs welcome!
 
