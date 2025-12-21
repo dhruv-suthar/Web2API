@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from typing import Dict, Any
 
 # Import services - paths relative to project root for Motia bundling
+from src.utils.state_utils import unwrap_state_data
 from src.services.validator.json_schema_validator import validate
 from src.services.progress.progress_service import update_progress
 from src.services.cache.cache_service import cache_extraction_result
@@ -42,6 +43,8 @@ config = {
     # Include service/util dependencies for Motia Cloud deployment
     # Paths are relative from steps/events/ to src/
     "includeFiles": [
+        "../../src/utils/__init__.py",
+        "../../src/utils/state_utils.py",
         "../../src/services/__init__.py",
         "../../src/services/validator/__init__.py",
         "../../src/services/validator/json_schema_validator.py",
@@ -83,7 +86,8 @@ async def handler(input_data: Dict[str, Any], context) -> None:
             return
         
         # 2. Fetch large data from state (stored by extract_with_llm_step or fetch_webpage_step)
-        extraction_payload = await context.state.get("extraction_payloads", job_id)
+        extraction_payload_result = await context.state.get("extraction_payloads", job_id)
+        extraction_payload = unwrap_state_data(extraction_payload_result)
         if not extraction_payload:
             await emit_failure(context, job_id, "Extraction payload not found in state", "storing", url)
             return
@@ -145,7 +149,7 @@ async def handler(input_data: Dict[str, Any], context) -> None:
         # 5. Update job status
         try:
             existing_job_result = await context.state.get("jobs", job_id)
-            existing_job = existing_job_result.get("data", existing_job_result) if isinstance(existing_job_result, dict) else {}
+            existing_job = unwrap_state_data(existing_job_result, {})
             job_metadata = existing_job.copy() if existing_job else {}
             job_metadata.update({
                 "status": "completed",

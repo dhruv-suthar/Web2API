@@ -3,12 +3,19 @@ Cache Service
 
 Handles caching of extraction results to avoid redundant LLM calls.
 Cache key = hash(url + schema) to ensure different schemas get different cache entries.
+
+Simple caching model:
+- Cache never expires automatically
+- Scheduled jobs overwrite cache with fresh data
+- Manual API calls return cached data
 """
 
 import json
 import hashlib
 from datetime import datetime, timezone
 from typing import Dict, Any, Optional
+
+from src.utils.state_utils import unwrap_state_data
 
 
 def generate_extraction_cache_key(url: str, schema: Any) -> str:
@@ -60,11 +67,12 @@ async def get_cached_extraction(
     try:
         cache_key = generate_extraction_cache_key(url, schema)
         result = await state.get("extraction_cache", cache_key)
+        cache_entry = unwrap_state_data(result)
         
-        if result:
-            cached_data = result.get("data", result) if isinstance(result, dict) else result
-            if cached_data and cached_data.get("data"):
-                return cached_data
+        # Valid cache entry must have both 'cached_at' and 'data' keys
+        if cache_entry and isinstance(cache_entry, dict):
+            if "cached_at" in cache_entry and "data" in cache_entry:
+                return cache_entry
         
         return None
     except Exception:
@@ -112,4 +120,3 @@ async def cache_extraction_result(
         return True
     except Exception:
         return False
-

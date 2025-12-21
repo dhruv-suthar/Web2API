@@ -19,6 +19,7 @@ from typing import Dict, Any
 
 # Import services - paths relative to project root for Motia bundling
 from src.utils.hash_utils import hash_url_full
+from src.utils.state_utils import unwrap_state_data
 from src.services.scraper.firecrawl_scraper import scrape as firecrawl_scrape
 from src.services.scraper.simple_scraper import scrape as simple_scrape
 from src.services.cleaner.html_cleaner import to_markdown
@@ -59,6 +60,7 @@ config = {
     "includeFiles": [
         "../../src/utils/__init__.py",
         "../../src/utils/hash_utils.py",
+        "../../src/utils/state_utils.py",
         "../../src/services/__init__.py",
         "../../src/services/scraper/__init__.py",
         "../../src/services/scraper/firecrawl_scraper.py",
@@ -107,12 +109,11 @@ async def handler(input_data: Dict[str, Any], context) -> None:
         
         # 2. Fetch schema from state (stored by run_scraper_step)
         job_data_result = await context.state.get("job_payloads", job_id)
-        if not job_data_result:
+        job_data = unwrap_state_data(job_data_result)
+        if not job_data:
             await emit_failure(context, job_id, "Job payload not found in state", "fetching")
             return
         
-        # Unwrap the 'data' property if Motia state wraps it
-        job_data = job_data_result.get("data", job_data_result) if isinstance(job_data_result, dict) else job_data_result
         schema = job_data.get("schema")
         if not schema:
             await emit_failure(context, job_id, "schema is required", "fetching")
@@ -174,16 +175,15 @@ async def handler(input_data: Dict[str, Any], context) -> None:
         
         if use_cache:
             cached_result = await context.state.get("content_cache", url_hash)
-            if cached_result:
-                cached_data = cached_result.get("data", cached_result) if isinstance(cached_result, dict) else cached_result
-                if cached_data and cached_data.get("markdown"):
-                    markdown = cached_data.get("markdown", "")
-                    metadata = cached_data.get("metadata", {})
-                    content_cached = True
-                    context.logger.info("Content cache hit - skipping Firecrawl", {
-                        "job_id": job_id,
-                        "url": url
-                    })
+            cached_data = unwrap_state_data(cached_result)
+            if cached_data and cached_data.get("markdown"):
+                markdown = cached_data.get("markdown", "")
+                metadata = cached_data.get("metadata", {})
+                content_cached = True
+                context.logger.info("Content cache hit - skipping Firecrawl", {
+                    "job_id": job_id,
+                    "url": url
+                })
         
         # 6. Scrape if no content cache
         if not markdown:

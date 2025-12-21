@@ -12,6 +12,7 @@ Optimized for Motia Cloud:
 from typing import Dict, Any
 
 # Import services - paths relative to project root for Motia bundling
+from src.utils.state_utils import unwrap_state_data
 from src.services.extractor.openai_extractor import extract
 from src.services.progress.progress_service import update_progress
 
@@ -49,6 +50,8 @@ config = {
     # Include service/util dependencies for Motia Cloud deployment
     # Paths are relative from steps/events/ to src/
     "includeFiles": [
+        "../../src/utils/__init__.py",
+        "../../src/utils/state_utils.py",
         "../../src/services/__init__.py",
         "../../src/services/extractor/__init__.py",
         "../../src/services/extractor/openai_extractor.py",
@@ -90,12 +93,11 @@ async def handler(input_data: Dict[str, Any], context) -> None:
         
         # 2. Fetch large data from state (stored by fetch_webpage_step)
         fetch_payload_result = await context.state.get("fetch_payloads", job_id)
-        if not fetch_payload_result:
+        fetch_payload = unwrap_state_data(fetch_payload_result)
+        if not fetch_payload:
             await emit_failure(context, job_id, "Fetch payload not found in state", "extracting", url)
             return
         
-        # Unwrap the 'data' property if Motia state wraps it
-        fetch_payload = fetch_payload_result.get("data", fetch_payload_result) if isinstance(fetch_payload_result, dict) else fetch_payload_result
         markdown = fetch_payload.get("markdown", "").strip()
         schema = fetch_payload.get("schema")
         metadata = fetch_payload.get("metadata", {})

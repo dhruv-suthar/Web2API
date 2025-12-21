@@ -10,6 +10,8 @@ the monitor entry from state.
 from datetime import datetime, timezone
 from typing import Dict, Any
 
+from src.utils.state_utils import unwrap_state_data
+
 # Response schema for 200 OK
 response_schema_200 = {
     "type": "object",
@@ -66,7 +68,11 @@ config = {
         200: response_schema_200,
         404: response_schema_404,
         500: response_schema_error
-    }
+    },
+    "includeFiles": [
+        "../../src/utils/__init__.py",
+        "../../src/utils/state_utils.py",
+    ]
 }
 
 
@@ -102,15 +108,7 @@ async def handler(req: Dict[str, Any], context) -> Dict[str, Any]:
         # Check if monitor exists
         try:
             monitor_result = await context.state.get("monitors", monitor_id)
-            
-            # Handle state response format
-            monitor = None
-            if monitor_result:
-                if isinstance(monitor_result, dict):
-                    monitor = monitor_result.get("data", monitor_result)
-                else:
-                    monitor = monitor_result
-                    
+            monitor = unwrap_state_data(monitor_result)
         except Exception as e:
             context.logger.error("Failed to get monitor", {
                 "monitor_id": monitor_id,

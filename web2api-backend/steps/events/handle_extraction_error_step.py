@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 from typing import Dict, Any
 
 # Import services - paths relative to project root for Motia bundling
+from src.utils.state_utils import unwrap_state_data
 from src.services.progress.progress_service import update_progress
 
 
@@ -37,6 +38,8 @@ config = {
     # Include service/util dependencies for Motia Cloud deployment
     # Paths are relative from steps/events/ to src/
     "includeFiles": [
+        "../../src/utils/__init__.py",
+        "../../src/utils/state_utils.py",
         "../../src/services/__init__.py",
         "../../src/services/progress/__init__.py",
         "../../src/services/progress/progress_service.py",
@@ -82,7 +85,7 @@ async def handler(input_data: Dict[str, Any], context) -> None:
     try:
         # Update job status to failed
         existing_job_result = await context.state.get("jobs", job_id)
-        existing_job = existing_job_result.get("data", existing_job_result) if isinstance(existing_job_result, dict) else {}
+        existing_job = unwrap_state_data(existing_job_result, {})
         job_metadata = existing_job.copy() if existing_job else {}
         
         job_metadata.update({

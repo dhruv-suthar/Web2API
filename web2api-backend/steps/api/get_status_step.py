@@ -7,6 +7,8 @@ Combines job metadata from state with real-time progress from stream.
 
 from typing import Dict, Any, Optional
 
+from src.utils.state_utils import unwrap_state_data
+
 # Response schema for 200 OK
 response_schema_200 = {
     "type": "object",
@@ -108,7 +110,11 @@ config = {
     "description": "Get current status and progress of extraction job",
     "emits": [],
     "flows": ["extraction-flow"],
-    "responseSchema": response_schema
+    "responseSchema": response_schema,
+    "includeFiles": [
+        "../../src/utils/__init__.py",
+        "../../src/utils/state_utils.py",
+    ]
 }
 
 
@@ -196,17 +202,15 @@ async def handler(req: Dict[str, Any], context) -> Dict[str, Any]:
                 }
             }
         
-        # Motia state returns {"data": {...actual_data...}}
-        # Extract the actual data from the wrapper
-        job = job_result.get("data", job_result) if isinstance(job_result, dict) else job_result
+        # Unwrap Motia state data
+        job = unwrap_state_data(job_result)
         
         # Get progress from stream
         progress = await get_stream_progress(context, job_id)
         
         # Determine status - prioritize stream status if available, otherwise use job status
         if progress:
-            # Stream might also be wrapped - extract data if needed
-            progress_data = progress.get("data", progress) if isinstance(progress, dict) else progress
+            progress_data = unwrap_state_data(progress)
             # Use stream status as it's more up-to-date
             status = progress_data.get("status", job.get("status", "queued"))
             percent = progress_data.get("percent", 0)
@@ -228,9 +232,8 @@ async def handler(req: Dict[str, Any], context) -> Dict[str, Any]:
             # Also check extraction results for error details
             if not error:
                 extraction_result = await context.state.get("extractions", job_id)
-                if extraction_result:
-                    extraction = extraction_result.get("data", extraction_result) if isinstance(extraction_result, dict) else extraction_result
-                    if extraction.get("error"):
+                extraction = unwrap_state_data(extraction_result)
+                if extraction and extraction.get("error"):
                         error = extraction.get("error")
                         stage = extraction.get("stage")
         

@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 from typing import Dict, Any, Optional
 
 from src.utils.hash_utils import generate_job_id
+from src.utils.state_utils import unwrap_state_data
 
 
 def create_job_metadata(
@@ -57,13 +58,12 @@ async def update_job_status(
     """
     try:
         job_result = await state.get("jobs", job_id)
-        if job_result:
-            job = job_result.get("data", job_result) if isinstance(job_result, dict) else job_result
-            if job:
-                job["status"] = status
-                job["updated_at"] = datetime.now(timezone.utc).isoformat()
-                job.update(extra_fields)
-                await state.set("jobs", job_id, job)
+        job = unwrap_state_data(job_result)
+        if job:
+            job["status"] = status
+            job["updated_at"] = datetime.now(timezone.utc).isoformat()
+            job.update(extra_fields)
+            await state.set("jobs", job_id, job)
     except Exception:
         pass
 
@@ -96,23 +96,21 @@ async def poll_for_completion(
         
         # Check job status
         job_result = await state.get("jobs", job_id)
-        if job_result:
-            job = job_result.get("data", job_result) if isinstance(job_result, dict) else job_result
-            status = job.get("status") if job else None
-            
-            if status == "completed":
-                extraction_result = await state.get("extractions", job_id)
-                if extraction_result:
-                    extraction = extraction_result.get("data", extraction_result) if isinstance(extraction_result, dict) else extraction_result
-                    if extraction:
-                        return extraction
-            
-            if status == "failed":
-                return {
-                    "job_id": job_id,
-                    "status": "failed",
-                    "error": job.get("error", "Extraction failed")
-                }
+        job = unwrap_state_data(job_result)
+        status = job.get("status") if job else None
+        
+        if status == "completed":
+            extraction_result = await state.get("extractions", job_id)
+            extraction = unwrap_state_data(extraction_result)
+            if extraction:
+                return extraction
+        
+        if status == "failed":
+            return {
+                "job_id": job_id,
+                "status": "failed",
+                "error": job.get("error", "Extraction failed")
+            }
         
         # Wait before next poll
         await asyncio.sleep(poll_interval)

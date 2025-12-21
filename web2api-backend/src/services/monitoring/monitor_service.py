@@ -9,6 +9,7 @@ from datetime import datetime, timezone, timedelta
 from typing import Dict, Any, Optional, Union, List
 
 from src.utils.hash_utils import generate_monitor_id
+from src.utils.state_utils import unwrap_state_data
 
 
 def parse_schedule(schedule: Union[str, int, None]) -> Optional[Dict[str, Any]]:
@@ -162,8 +163,7 @@ async def auto_add_to_monitoring(
     existing_monitor = None
     try:
         existing_result = await state.get("monitors", monitor_id)
-        if existing_result:
-            existing_monitor = existing_result.get("data", existing_result) if isinstance(existing_result, dict) else existing_result
+        existing_monitor = unwrap_state_data(existing_result)
     except Exception:
         pass
     

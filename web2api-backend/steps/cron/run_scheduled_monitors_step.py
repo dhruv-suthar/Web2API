@@ -14,6 +14,7 @@ from typing import Dict, Any
 
 # Import services - paths relative to project root for Motia bundling
 from src.utils.hash_utils import generate_job_id, hash_url
+from src.utils.state_utils import unwrap_state_data
 from src.services.monitoring.monitor_service import calculate_next_run
 from src.services.job.job_service import create_job_metadata
 
@@ -30,6 +31,7 @@ config = {
     "includeFiles": [
         "../../src/utils/__init__.py",
         "../../src/utils/hash_utils.py",
+        "../../src/utils/state_utils.py",
         "../../src/services/__init__.py",
         "../../src/services/monitoring/__init__.py",
         "../../src/services/monitoring/monitor_service.py",
@@ -107,21 +109,21 @@ async def handler(context) -> None:
             
             # Get scraper
             scraper_result = await context.state.get("scrapers", scraper_id)
-            if not scraper_result:
-                context.logger.warn("Scraper not found", {"scraper_id": scraper_id})
-                continue
-            
-            scraper = scraper_result.get("data", scraper_result) if isinstance(scraper_result, dict) else scraper_result
+            scraper = unwrap_state_data(scraper_result)
             if not scraper:
+                context.logger.warn("Scraper not found", {"scraper_id": scraper_id})
                 continue
             
             # Generate job
             job_id = generate_job_id()
             url_group_id = hash_url(url)
             
+            scraper_options = scraper.get("options", {})
             merged_options = {
-                "use_cache": False,
-                **scraper.get("options", {})
+                "use_cache": False,  # Always fresh scrape for scheduled jobs
+                "wait_for": scraper_options.get("wait_for", 2000),
+                "timeout": scraper_options.get("timeout", 30000),
+                "use_simple_scraper": scraper_options.get("use_simple_scraper", False)
             }
             
             # Store job metadata

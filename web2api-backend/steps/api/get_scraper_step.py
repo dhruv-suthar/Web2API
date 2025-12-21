@@ -1,5 +1,7 @@
 from typing import Dict, Any
 
+from src.utils.state_utils import unwrap_state_data
+
 # Response schema for 200 OK
 response_schema = {
     200: {
@@ -98,7 +100,11 @@ config = {
     "description": "Get a specific scraper by ID",
     "emits": [],
     "flows": ["scraper-management"],
-    "responseSchema": response_schema
+    "responseSchema": response_schema,
+    "includeFiles": [
+        "../../src/utils/__init__.py",
+        "../../src/utils/state_utils.py",
+    ]
 }
 
 
@@ -153,9 +159,8 @@ async def handler(req: Dict[str, Any], context) -> Dict[str, Any]:
                 }
             }
         
-        # Motia state returns {"data": {...actual_data...}}
-        # Extract the actual scraper data from the wrapper
-        scraper_data = scraper.get("data", scraper) if isinstance(scraper, dict) else scraper
+        # Unwrap Motia state data
+        scraper_data = unwrap_state_data(scraper)
         
         # Build endpoint URL
         endpoint = f"/api/scrape/{scraper_id}"
