@@ -300,7 +300,6 @@ I used Motia to build an event-driven web extraction pipeline integrating Firecr
 | **Event Steps** | Async pipeline: FetchWebpage → ExtractWithLLM → StoreResults → HandleError |
 | **Cron Steps** | Scheduled monitoring every 5 minutes with cache bypass |
 | **State Management** | 9 state groups including two-level caching (extraction + content) |
-| **FIFO Queues** | 3 retries per step, visibility timeout for durability |
 | **Streams** | Job progress tracking with status/percent/message |
 | **Workbench** | Visual flow debugging and step visualization |
 
