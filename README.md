@@ -2,11 +2,16 @@
 
 > A data gathering platform that turns any website into a **type-safe API** — with schema validation, AI-powered extraction, and scheduled monitoring.
 
+<p align="center">
+  <a href="https://web2api-frontend.vercel.app/"><strong>🌐 Live Demo</strong></a> · 
+  <a href="https://my-app-production-f720.up.railway.app/"><strong> Motia Workbench</strong></a>
+</p>
+
 ## ✨ Features
 
-- 🤖 **AI-Powered Extraction** - Define your data in JSON schema, GPT-4o-mini extracts it
+- 🤖 **AI-Powered Extraction** - Define your data in JSON schema, AI extracts it
 - 🚀 **Zero Selectors** - No CSS, XPath, or regex - AI understands the page semantically
-- ⚡ **Two-Level Caching** - Extraction cache + content cache = instant repeat requests
+- ⚡ **Caching** - Extraction cache + content cache = instant repeat requests
 - 📊 **Real-time Progress** - WebSocket streaming shows extraction status live
 - 🔄 **Scheduled Monitoring** - Cron jobs for automatic re-scraping
 - 🛠️ **Visual Workbench** - See your workflow in Motia's flow visualization
@@ -44,7 +49,6 @@
 | Cron Scheduler | ✅ Done | Check monitors every 5 minutes |
 | Auto-Monitoring | ✅ Done | URLs auto-added to monitoring |
 | Fresh Scrapes | ✅ Done | Bypass cache for scheduled runs |
-| Webhook Notifications | 🔜 Planned | Notify on data changes |
 
 ### Frontend
 
@@ -258,14 +262,28 @@ Built for the [Backend Reloaded Hackathon](https://www.wemakedevs.org/hackathons
 
 ### How Web2API Uses Motia
 
+I used Motia to build an event-driven web extraction pipeline integrating Firecrawl and OpenAI. Each external API call runs in its own Motia Event Step, enabling independent retries and failure isolation.
+
+**FetchWebpage Step** subscribes to `extraction.requested` and calls Firecrawl for JavaScript rendering, anti-bot protection, and CAPTCHA bypass. The step uses a FIFO queue with 3 automatic retries for timeouts and rate limits, and stores the extracted markdown in Motia State to comply with the 4KB event payload limit.
+
+**ExtractWithLLM Step** subscribes to `webpage.fetched`, retrieves the markdown from Motia State, and calls OpenAI GPT-4o-mini with a strict JSON schema using `response_format: json_object` to guarantee structured output. The extracted data is stored back in Motia State for validation.
+
+**State Management** enabled passing large payloads (markdown, schemas, extracted data) between steps. I implemented two-level caching in Motia State: an extraction cache (URL + schema hash) skips both Firecrawl and OpenAI, while a content cache (URL only) skips just Firecrawl for repeat URLs with different schemas.
+
+**Motia Streams** store real-time progress updates as each step completes, which the frontend polls to display job status.
+
+**Cron Step** runs every 5 minutes to check scheduled monitors and triggers fresh scrapes with `use_cache: False`, ensuring monitored URLs always get up-to-date data.
+
+#### Motia Features Summary
+
 | Motia Feature | Implementation |
 |---------------|----------------|
 | **API Steps** | 9 REST endpoints for scraper CRUD and job management |
-| **Event Steps** | Async pipeline: Fetch → Extract → Store |
-| **Cron Steps** | Scheduled monitoring every 5 minutes |
-| **State Management** | Redis-backed extraction cache + content cache |
-| **AI Integration** | Firecrawl (scrapes to markdown, handles captcha & bot detection) + OpenAI GPT-4o-mini (semantic extraction) |
-| **Streams** | Real-time WebSocket progress updates to frontend |
+| **Event Steps** | Async pipeline: FetchWebpage → ExtractWithLLM → StoreResults → HandleError |
+| **Cron Steps** | Scheduled monitoring every 5 minutes with cache bypass |
+| **State Management** | 9 state groups including two-level caching (extraction + content) |
+| **FIFO Queues** | 3 retries per step, visibility timeout for durability |
+| **Streams** | Job progress tracking with status/percent/message |
 | **Workbench** | Visual flow debugging and step visualization |
 
 
