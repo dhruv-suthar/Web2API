@@ -263,7 +263,10 @@ Built for the [Backend Reloaded Hackathon](https://www.wemakedevs.org/hackathons
 | **API Steps** | 9 REST endpoints for scraper CRUD and job management |
 | **Event Steps** | Async pipeline: Fetch → Extract → Store |
 | **Cron Steps** | Scheduled monitoring every 5 minutes |
-| **State Management** | Redis-backed caching with two cache layers |
+| **State Management** | Redis-backed extraction cache + content cache |
+| **AI Integration** | Firecrawl (scrapes to markdown, handles captcha & bot detection) + OpenAI GPT-4o-mini (semantic extraction) |
+| **Streams** | Real-time WebSocket progress updates to frontend |
+| **Workbench** | Visual flow debugging and step visualization |
 
 
 ## 📚 Learn More
