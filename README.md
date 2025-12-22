@@ -17,8 +17,6 @@
 - 🛠️ **Visual Workbench** - See your workflow in Motia's flow visualization
 
 
-## 🗺️ Roadmap
-
 ### Core Features
 
 | Feature | Status | Description |
